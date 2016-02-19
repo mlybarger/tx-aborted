@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sy:switchyard xmlns:bean="urn:switchyard-component-bean:config:1.1" xmlns:file="urn:switchyard-component-camel-file:config:1.1" xmlns:jms="urn:switchyard-component-camel-jms:config:1.1" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:sy="urn:switchyard-config:switchyard:1.1" name="switchyard-example" targetNamespace="urn:com.example.switchyard:switchyard-example:1.0">
+  <sca:composite name="switchyard-example" targetNamespace="urn:com.example.switchyard:switchyard-example:1.0">
+    <sca:component name="OneBean">
+      <bean:implementation.bean requires="managedTransaction.Global" class="com.example.switchyard.switchyard_example.OneBean"/>
+      <sca:service name="One" requires="propagatesTransaction">
+        <sca:interface.java interface="com.example.switchyard.switchyard_example.One"/>
+      </sca:service>
+      <sca:reference name="Two">
+        <sca:interface.java interface="com.example.switchyard.switchyard_example.Two"/>
+      </sca:reference>
+    </sca:component>
+    <sca:service name="One" promote="OneBean/One">
+      <sca:interface.java interface="com.example.switchyard.switchyard_example.One"/>
+      <file:binding.file name="file1">
+        <file:directory>/tmp/tx</file:directory>
+        <file:consume/>
+      </file:binding.file>
+    </sca:service>
+    <sca:reference name="Two" multiplicity="0..1" promote="OneBean/Two">
+      <sca:interface.java interface="com.example.switchyard.switchyard_example.Two"/>
+      <jms:binding.jms name="jms1">
+        <jms:queue>queue/two.in</jms:queue>
+        <jms:connectionFactory>#activemq/ConnectionFactory</jms:connectionFactory>
+        <jms:concurrentConsumers>5</jms:concurrentConsumers>
+        <jms:maxConcurrentConsumers>5</jms:maxConcurrentConsumers>
+        <jms:replyTo>queue/two.out</jms:replyTo>
+        <jms:transacted>true</jms:transacted>
+        <jms:transactionManager>#jtaTransactionManager</jms:transactionManager>
+      </jms:binding.jms>
+    </sca:reference>
+    <sca:component name="ThreeBean">
+      <bean:implementation.bean class="com.example.switchyard.switchyard_example.ThreeBean"/>
+      <sca:service name="Three">
+        <sca:interface.java interface="com.example.switchyard.switchyard_example.Three"/>
+      </sca:service>
+    </sca:component>
+    <sca:service name="Three" promote="ThreeBean/Three">
+      <sca:interface.java interface="com.example.switchyard.switchyard_example.Three"/>
+      <jms:binding.jms name="jms1">
+        <jms:queue>queue/two.in</jms:queue>
+        <jms:connectionFactory>#activemq/ConnectionFactory</jms:connectionFactory>
+        <jms:concurrentConsumers>5</jms:concurrentConsumers>
+        <jms:maxConcurrentConsumers>5</jms:maxConcurrentConsumers>
+        <jms:replyTo>queue/two.out</jms:replyTo>
+      </jms:binding.jms>
+    </sca:service>
+  </sca:composite>
+</sy:switchyard>
