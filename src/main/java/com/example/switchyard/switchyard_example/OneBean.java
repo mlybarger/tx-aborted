@@ -16,9 +16,16 @@ public class OneBean implements One {
 	Two two;
 	
 	@Override
-	public String process(String message) {
+	public String process(String message) throws Exception {
 		LOG.info("process() - start :" + message);
-		String ret = two.submit(message);
+		String ret = null;
+		try {
+			ret = two.submit(message);
+		} catch (Exception e)
+		{
+			LOG.error("error", e);
+			throw e;
+		}
 		LOG.info("process() - done:" + ret); 
 		return ret;
 	}

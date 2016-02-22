@@ -53,6 +53,11 @@
       <version>${switchyard.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+    	<groupId>org.switchyard.components</groupId>
+    	<artifactId>switchyard-component-http</artifactId>
+    	<version>${switchyard.version}</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
