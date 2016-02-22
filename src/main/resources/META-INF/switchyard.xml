@@ -20,6 +20,13 @@
         <sy:operationSelector operationName="process"/>
         <http:contextPath>tx</http:contextPath>
       </http:binding.http>
+      <jms:binding.jms name="jms1">
+        <sy:operationSelector operationName="process"/>
+        <jms:queue>queue/one.in</jms:queue>
+        <jms:connectionFactory>#activemq/ConnectionFactory</jms:connectionFactory>
+        <jms:transacted>true</jms:transacted>
+        <jms:transactionManager>#jtaTransactionManager</jms:transactionManager>
+      </jms:binding.jms>
     </sca:service>
     <sca:reference name="Two" multiplicity="0..1" promote="OneBean/Two">
       <sca:interface.java interface="com.example.switchyard.switchyard_example.Two"/>
